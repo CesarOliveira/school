@@ -1,0 +1,39 @@
+version: '2.2'
+services:
+  api:
+    tty: true
+    stdin_open: true
+    container_name: api
+    build:
+      context: ./api
+      cache_from:
+        - ruby:2.6.3-alpine
+    env_file:
+      - ./config/api.env
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./api:/app
+    depends_on:
+      - postgres
+      - redis
+    links:
+      - postgres
+      - redis
+
+  postgres:
+    container_name: postgresql
+    image: postgres:9.5-alpine
+    volumes:
+      - ./tmp/postgres:/var/lib/postgresql/data
+    env_file:
+      - ./config/postgres.env
+    ports:
+      - "5433:5432"
+
+  redis:
+    container_name: redis
+    image: redis
+    command: redis-server --requirepass Redis2020!
+    ports:
+      - "6379:6379"
