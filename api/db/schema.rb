@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_16_112048) do
+ActiveRecord::Schema.define(version: 2020_03_17_232614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,4 +22,18 @@ ActiveRecord::Schema.define(version: 2020_03_16_112048) do
     t.datetime "updated_at", null: false
   end
 
+# Could not dump table "materials" because of following StandardError
+#   Unknown type 'material_type' for column 'kind'
+
+  create_table "media", force: :cascade do |t|
+    t.string "name"
+    t.string "path"
+    t.bigint "course_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_media_on_course_id"
+  end
+
+  add_foreign_key "materials", "courses"
+  add_foreign_key "media", "courses"
 end
