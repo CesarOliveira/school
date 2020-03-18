@@ -9,6 +9,12 @@ class CoursesController < ApplicationController
     render_show
   end
 
+  def by_name
+    @courses = Course.where('lower(name) LIKE ?', "%#{params[:course_name].downcase}%").all
+
+    render_index
+  end
+
   def create
     @course = Course.new(course_params)
 

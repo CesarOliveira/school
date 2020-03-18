@@ -15,6 +15,10 @@ module RenderingHelper
     render :show, status: :ok
   end
 
+  def render_index
+    render :index, status: :ok
+  end
+
   def render_destroy
     head :ok
   end
