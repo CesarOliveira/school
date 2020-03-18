@@ -2,7 +2,7 @@ class CoursesController < ApplicationController
   before_action :set_course, only: %i[show update destroy]
 
   def index
-    @courses = Course.all
+    @courses = CourseRepository.find_all
   end
 
   def show
@@ -10,15 +10,15 @@ class CoursesController < ApplicationController
   end
 
   def by_name
-    @courses = Course.where('lower(name) LIKE ?', "%#{params[:course_name].downcase}%").all
+    @courses = CourseRepository.find_by_name(params[:course_name])
 
     render_index
   end
 
   def create
-    @course = Course.new(course_params)
+    @course = CourseRepository.create(course_params)
 
-    if @course.save
+    if CourseRepository.save(@course)
       render :create, status: :created
     else
       render_model_error @course
@@ -26,7 +26,7 @@ class CoursesController < ApplicationController
   end
 
   def update
-    if @course.update(course_params)
+    if CourseRepository.update(@course, course_params)
       render :update, status: :ok
     else
       render_model_error @course
@@ -34,7 +34,7 @@ class CoursesController < ApplicationController
   end
 
   def destroy
-    if @course.destroy
+    if CourseRepository.destroy(@course)
       render_destroy
     else
       render_model_error @course
@@ -51,7 +51,7 @@ class CoursesController < ApplicationController
     end
 
     def set_course
-      @course = Course.find(params[:id])
+      @course = CourseRepository.find_by_id(params[:id])
     rescue ActiveRecord::RecordNotFound => e
       render_model_not_found e.to_s
     end
