@@ -175,4 +175,34 @@ RSpec.describe 'courses requests', type: :request do
       end
     end
   end
+
+
+  describe 'Resquest to destroy a course' do
+
+    let(:course) { create(:course) }
+
+    context 'when send with the right data' do
+
+      before do
+        delete "/api/courses/#{course.id}"
+      end
+
+      it 'must return status ok' do
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when an error occurs during delete' do
+
+      before do
+        allow_any_instance_of(Course).to receive(:destroy).and_return(false)
+
+        delete "/api/courses/#{course.id}"
+      end
+
+      it 'must return status unprocessable_entity' do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
 end
