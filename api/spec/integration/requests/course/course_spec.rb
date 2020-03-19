@@ -205,4 +205,29 @@ RSpec.describe 'courses requests', type: :request do
       end
     end
   end
+
+  describe 'Resquest to find by_name courses' do
+    let(:course) { courses.first }
+    let(:name_to_find) { course.name[1..2] }
+    before do
+      get(
+        "/api/courses/by_name/#{name_to_find}",
+        headers: headers
+      )
+    end
+
+    it 'must match json schema' do
+      expect(response).to match_json_schema('courses/index')
+    end
+
+    it 'must return the correct number of courses' do
+      parsed_response = JSON.parse(response.body)
+
+      expect(parsed_response['items'].size).to be > 0
+    end
+
+    it 'must return status ok' do
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end
